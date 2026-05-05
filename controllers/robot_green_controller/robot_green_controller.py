@@ -66,6 +66,12 @@ BALL_CENTER_LIMIT    = 16
 BALL_RECENTER_LIMIT  = 55
 MIN_CARRY_SPEED      = 1.0
 MAX_CARRY_SPEED      = 6.0
+POCKET_DONE_RATIO    = 0.60
+BACKUP_SPEED         = -3.0
+BACKUP_TIME          = 1.0
+
+POCKET_SAMPLE_PIXELS = len(range(0, POCKET_WIDTH, 4)) * len(range(0, POCKET_HEIGHT, 4))
+POCKET_DONE_PIXELS   = int(POCKET_DONE_RATIO * POCKET_SAMPLE_PIXELS)
 
 # ── helpers ───────────────────────────────────────────────────────────────────
 
@@ -108,6 +114,14 @@ def drive_forward_after_possession():
 
     # Important: do NOT stop here.
     # The robot should smoothly transition into pocket-seeking.
+
+def backup_and_stop():
+    end = robot.getTime() + BACKUP_TIME
+    while robot.step(timestep) != -1:
+        set_speed(BACKUP_SPEED, BACKUP_SPEED)
+        if robot.getTime() >= end:
+            break
+    stop()
 
 # ── yellow ball detector: high R, high G, low B ──────────────────────────────
 
@@ -180,10 +194,15 @@ wait(START_DELAY)
 
 deployed = False
 has_ball = False
+mission_done = False
 possession_counter = 0
 full_view_counter = 0
 
 while robot.step(timestep) != -1:
+
+    if mission_done:
+        stop()
+        continue
 
     if not has_ball:
         error, count = get_centroid_and_count()
@@ -234,6 +253,11 @@ while robot.step(timestep) != -1:
         # Never rotate in place here — always keep forward momentum.
         pocket_error, pocket_pixels = get_pocket_centroid()
         ball_error, ball_pixels = get_centroid_and_count()
+
+        if pocket_pixels >= POCKET_DONE_PIXELS:
+            backup_and_stop()
+            mission_done = True
+            continue
 
         pocket_correction = 0.0
 
