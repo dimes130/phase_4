@@ -8,5 +8,8 @@ orthographicViewHeight: 1
 textFiles: -1
 consoles: Console:All:All
 renderingDevicePerspectives: robot_blue:blue_camera;1;1;0;0
+renderingDevicePerspectives: robot_blue:blue_pocket_camera;1;1;0;0
 renderingDevicePerspectives: robot_green:green_camera;1;1;0;0
+renderingDevicePerspectives: robot_green:green_pocket_camera;1;1;0;0
 renderingDevicePerspectives: robot_red:red_camera;1;1;0;0
+renderingDevicePerspectives: robot_red:red_pocket_camera;1;1;0;0

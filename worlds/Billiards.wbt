@@ -590,6 +590,28 @@ Robot {
       width 320
       height 240
     }
+    Pose {
+      translation 0 0 0.725
+      children [
+        Shape {
+          appearance PBRAppearance {
+            baseColor 0.15 0.15 0.15
+            roughness 0.6
+            metalness 0.2
+          }
+          geometry DEF PocketCameraMast Box {
+            size 0.08 0.08 1.35
+          }
+        }
+      ]
+    }
+    Camera {
+      translation 0.08 0 1.42
+      name "red_pocket_camera"
+      fieldOfView 1.4
+      width 320
+      height 240
+    }
     HingeJoint {
       jointParameters HingeJointParameters {
         position 1.8078813540128348e-10
@@ -867,6 +889,26 @@ Robot {
       translation 0.35 0 0.18
       name "blue_camera"
       fieldOfView 1.2
+      width 320
+      height 240
+    }
+    Pose {
+      translation 0 0 0.725
+      children [
+        Shape {
+          appearance PBRAppearance {
+            baseColor 0.15 0.15 0.15
+            roughness 0.6
+            metalness 0.2
+          }
+          geometry USE PocketCameraMast
+        }
+      ]
+    }
+    Camera {
+      translation 0.08 0 1.42
+      name "blue_pocket_camera"
+      fieldOfView 1.4
       width 320
       height 240
     }
@@ -1150,6 +1192,26 @@ Robot {
       translation 0.35 0 0.18
       name "green_camera"
       fieldOfView 1.2
+      width 320
+      height 240
+    }
+    Pose {
+      translation 0 0 0.725
+      children [
+        Shape {
+          appearance PBRAppearance {
+            baseColor 0.15 0.15 0.15
+            roughness 0.6
+            metalness 0.2
+          }
+          geometry USE PocketCameraMast
+        }
+      ]
+    }
+    Camera {
+      translation 0.08 0 1.42
+      name "green_pocket_camera"
+      fieldOfView 1.4
       width 320
       height 240
     }

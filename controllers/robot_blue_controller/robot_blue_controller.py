@@ -18,6 +18,12 @@ camera.enable(timestep)
 WIDTH  = camera.getWidth()
 HEIGHT = camera.getHeight()
 
+pocket_camera = robot.getDevice("blue_pocket_camera")
+pocket_camera.enable(timestep)
+
+POCKET_WIDTH  = pocket_camera.getWidth()
+POCKET_HEIGHT = pocket_camera.getHeight()
+
 left_arm  = robot.getDevice("blue_left_arm_motor")
 right_arm = robot.getDevice("blue_right_arm_motor")
 left_arm.setVelocity(0.5)
@@ -54,18 +60,14 @@ POST_POSSESSION_DRIVE_TIME = 0
 POCKET_FORWARD_SPEED = 3.0
 POCKET_TURN_BIAS     = 1.2
 POCKET_STEER_GAIN    = 0.025
+POCKET_CENTER_LIMIT  = 18
+BALL_KEEP_STEER_GAIN = 0.015
+BALL_CENTER_LIMIT    = 16
+BALL_RECENTER_LIMIT  = 55
 MIN_CARRY_SPEED      = 1.0
 MAX_CARRY_SPEED      = 6.0
 
-# Debug controls
-DEBUG = True
-DEBUG_INTERVAL = 0.5
-
 # ── helpers ───────────────────────────────────────────────────────────────────
-
-def debug(msg):
-    if DEBUG:
-        print(f"[BLUE t={robot.getTime():.2f}] {msg}")
 
 def clamp(value, low=-MAX_MOTOR_SPEED, high=MAX_MOTOR_SPEED):
     return max(low, min(high, value))
@@ -83,12 +85,10 @@ def stop():
     set_speed(0.0, 0.0)
 
 def fold_arms():
-    debug("Folding arms")
     left_arm.setPosition(FOLDED_POS)
     right_arm.setPosition(FOLDED_POS)
 
 def deploy_arms():
-    debug("Deploying arms")
     left_arm.setPosition(DEPLOYED_POS)
     right_arm.setPosition(DEPLOYED_POS)
 
@@ -100,7 +100,6 @@ def wait(seconds):
             break
 
 def drive_forward_after_possession():
-    debug(f"Driving forward {POST_POSSESSION_DRIVE_TIME}s after possession")
     end = robot.getTime() + POST_POSSESSION_DRIVE_TIME
     while robot.step(timestep) != -1:
         set_speed(FORWARD_SPEED, FORWARD_SPEED)
@@ -109,7 +108,6 @@ def drive_forward_after_possession():
 
     # Important: do NOT stop here.
     # The robot should smoothly transition into pocket-seeking.
-    debug("Finished post-possession drive")
 
 # ── cyan ball detector: high G, high B, low R ────────────────────────────────
 
@@ -148,21 +146,21 @@ def get_centroid_and_count():
 
 def get_pocket_centroid():
     """
-    Detect blue pocket.
-    Returns horizontal_error or None.
+    Detect the blue pocket with the high mast camera.
+    Returns (horizontal_error, pixel_count), or (None, 0) if not visible.
     """
-    image = camera.getImage()
+    image = pocket_camera.getImage()
     if image is None:
-        return None
+        return None, 0
 
     total_x = 0
     count = 0
 
-    for y in range(0, HEIGHT, 4):
-        for x in range(0, WIDTH, 4):
-            r = camera.imageGetRed(image, WIDTH, x, y)
-            g = camera.imageGetGreen(image, WIDTH, x, y)
-            b = camera.imageGetBlue(image, WIDTH, x, y)
+    for y in range(0, POCKET_HEIGHT, 4):
+        for x in range(0, POCKET_WIDTH, 4):
+            r = pocket_camera.imageGetRed(image, POCKET_WIDTH, x, y)
+            g = pocket_camera.imageGetGreen(image, POCKET_WIDTH, x, y)
+            b = pocket_camera.imageGetBlue(image, POCKET_WIDTH, x, y)
 
             # Blue pocket = high blue, low red, low green
             if b > 150 and r < 80 and g < 80:
@@ -170,39 +168,25 @@ def get_pocket_centroid():
                 count += 1
 
     if count < MIN_PIXELS:
-        return None
+        return None, 0
 
-    error = (total_x / count) - (WIDTH / 2)
-    return error
+    error = (total_x / count) - (POCKET_WIDTH / 2)
+    return error, count
 
 # ── main loop ─────────────────────────────────────────────────────────────────
 
 fold_arms()
 wait(START_DELAY)
 
-debug("Starting mission")
-
 deployed = False
 has_ball = False
 possession_counter = 0
 full_view_counter = 0
-last_debug_time = 0.0
-last_counter_print = -1
-last_full_view_print = -1
 
 while robot.step(timestep) != -1:
 
-    now = robot.getTime()
-
     if not has_ball:
         error, count = get_centroid_and_count()
-
-        if now - last_debug_time >= DEBUG_INTERVAL:
-            debug(
-                f"BALL MODE | error={error} count={count} deployed={deployed} "
-                f"possession_counter={possession_counter} full_view_counter={full_view_counter}"
-            )
-            last_debug_time = now
 
         if error is None:
             # Search clockwise for cyan ball
@@ -219,7 +203,6 @@ while robot.step(timestep) != -1:
 
             # Deploy arms once the ball is roughly centered
             if not deployed and abs(error) < CENTER_THRESHOLD:
-                debug(f"BALL CENTERED | deploying arms | error={error:.1f} count={count}")
                 deploy_arms()
                 deployed = True
                 wait(0.5)
@@ -229,19 +212,7 @@ while robot.step(timestep) != -1:
             if deployed and abs(error) < POSSESSION_CENTER and count > POSSESSION_PIXELS:
                 possession_counter += 1
 
-                if possession_counter != last_counter_print and possession_counter % 5 == 0:
-                    debug(
-                        f"POSSESSION BUILDING | counter={possession_counter}/{POSSESSION_FRAMES} "
-                        f"error={error:.1f} count={count}"
-                    )
-                    last_counter_print = possession_counter
-
             else:
-                if possession_counter > 0:
-                    debug(
-                        f"POSSESSION RESET | counter was {possession_counter} | "
-                        f"error={error:.1f} count={count}"
-                    )
                 possession_counter = 0
 
             # Backup trigger:
@@ -250,53 +221,45 @@ while robot.step(timestep) != -1:
             if deployed and count >= FULL_VIEW_PIXELS:
                 full_view_counter += 1
 
-                if full_view_counter != last_full_view_print and full_view_counter % 2 == 0:
-                    debug(
-                        f"FULL VIEW BUILDING | counter={full_view_counter}/{FULL_VIEW_FRAMES} "
-                        f"count={count} error={error:.1f}"
-                    )
-                    last_full_view_print = full_view_counter
-
             else:
-                if full_view_counter > 0:
-                    debug(
-                        f"FULL VIEW RESET | counter was {full_view_counter} | "
-                        f"count={count} error={error:.1f}"
-                    )
                 full_view_counter = 0
 
             if possession_counter >= POSSESSION_FRAMES or full_view_counter >= FULL_VIEW_FRAMES:
-                debug("POSSESSION CONFIRMED")
                 drive_forward_after_possession()
                 has_ball = True
-                debug("HAS_BALL = TRUE | SWITCHING TO POCKET MODE")
                 continue
 
     else:
         # Now drive toward blue pocket while holding/pushing the cyan ball.
         # Never rotate in place here — always keep forward momentum.
-        error = get_pocket_centroid()
+        pocket_error, pocket_pixels = get_pocket_centroid()
+        ball_error, ball_pixels = get_centroid_and_count()
 
-        if now - last_debug_time >= DEBUG_INTERVAL:
-            debug(f"POCKET MODE | pocket_error={error}")
-            last_debug_time = now
+        pocket_correction = 0.0
 
-        if error is None:
+        if pocket_error is None:
             # Curved search instead of spinning in place.
             # Both wheel sides stay positive so the robot keeps carrying the ball forward.
-            left_speed = POCKET_FORWARD_SPEED + POCKET_TURN_BIAS
-            right_speed = POCKET_FORWARD_SPEED - POCKET_TURN_BIAS
-            set_speed(left_speed, right_speed)
-
+            pocket_correction = POCKET_TURN_BIAS
         else:
-            # Curve toward the pocket while moving forward.
-            correction = POCKET_STEER_GAIN * error
+            # Use the high pocket camera to keep the pocket centered while carrying the ball.
+            if abs(pocket_error) >= POCKET_CENTER_LIMIT:
+                pocket_correction = POCKET_STEER_GAIN * pocket_error
 
-            left_speed = POCKET_FORWARD_SPEED + correction
-            right_speed = POCKET_FORWARD_SPEED - correction
+        ball_correction = 0.0
+        if ball_error is not None and abs(ball_error) >= BALL_CENTER_LIMIT:
+            ball_correction = BALL_KEEP_STEER_GAIN * ball_error
 
-            # Keep both sides moving forward so it does not pivot in place.
-            left_speed = max(MIN_CARRY_SPEED, min(MAX_CARRY_SPEED, left_speed))
-            right_speed = max(MIN_CARRY_SPEED, min(MAX_CARRY_SPEED, right_speed))
+        if ball_error is not None and abs(ball_error) >= BALL_RECENTER_LIMIT:
+            correction = ball_correction
+        else:
+            correction = pocket_correction + ball_correction
 
-            set_speed(left_speed, right_speed)
+        left_speed = POCKET_FORWARD_SPEED + correction
+        right_speed = POCKET_FORWARD_SPEED - correction
+
+        # Keep both sides moving forward so it does not pivot in place.
+        left_speed = max(MIN_CARRY_SPEED, min(MAX_CARRY_SPEED, left_speed))
+        right_speed = max(MIN_CARRY_SPEED, min(MAX_CARRY_SPEED, right_speed))
+
+        set_speed(left_speed, right_speed)
