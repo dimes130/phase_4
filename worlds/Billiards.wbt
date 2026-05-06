@@ -462,17 +462,90 @@ Ball {
   radius 0.375
 }
 Pioneer3dx {
-  translation 1.5 -2.8 0.0975
+  translation 2.0 -1.8 0.0975
   rotation 0 0 1 1.5708
   name "robot_yellow"
   controller "ball_pusher"
   customData "yellow -6.5 6 0"
   extensionSlot [
     GPS {
-      name "gps"
     }
     Compass {
-      name "compass"
+    }
+    Camera {
+      translation 0.13 0 0.2
+      fieldOfView 1.2
+      width 160
+      height 120
+    }
+    Solid {
+      translation 0.15 0.30 0.15
+      children [
+        Shape {
+          appearance PBRAppearance {
+            baseColor 0.2 0.2 0.2
+            roughness 1
+            metalness 0
+          }
+          geometry Box {
+            size 0.60 0.02 0.45
+          }
+        }
+      ]
+      name "plow_L"
+      boundingObject Box {
+        size 0.60 0.02 0.45
+      }
+      physics Physics {
+        density -1
+        mass 0.05
+      }
+    }
+    Solid {
+      translation 0.15 -0.30 0.15
+      children [
+        Shape {
+          appearance PBRAppearance {
+            baseColor 0.2 0.2 0.2
+            roughness 1
+            metalness 0
+          }
+          geometry Box {
+            size 0.60 0.02 0.45
+          }
+        }
+      ]
+      name "plow_R"
+      boundingObject Box {
+        size 0.60 0.02 0.45
+      }
+      physics Physics {
+        density -1
+        mass 0.05
+      }
+    }
+    Solid {
+      translation 0.46 0 0.15
+      children [
+        Shape {
+          appearance PBRAppearance {
+            baseColor 0.2 0.2 0.2
+            roughness 1
+            metalness 0
+          }
+          geometry Box {
+            size 0.02 0.62 0.45
+          }
+        }
+      ]
+      name "plow_front"
+      boundingObject Box {
+        size 0.02 0.62 0.45
+      }
+      physics Physics {
+        density -1
+        mass 0.05
+      }
     }
   ]
 }
@@ -484,25 +557,171 @@ Pioneer3dx {
   customData "magenta -6.5 -3 30"
   extensionSlot [
     GPS {
-      name "gps"
     }
     Compass {
-      name "compass"
+    }
+    Camera {
+      translation 0.13 0 0.2
+      fieldOfView 1.2
+      width 160
+      height 120
+    }
+    Solid {
+      translation 0.15 0.30 0.15
+      children [
+        Shape {
+          appearance PBRAppearance {
+            baseColor 0.2 0.2 0.2
+            roughness 1
+            metalness 0
+          }
+          geometry Box {
+            size 0.60 0.02 0.45
+          }
+        }
+      ]
+      name "plow_L"
+      boundingObject Box {
+        size 0.60 0.02 0.45
+      }
+      physics Physics {
+        density -1
+        mass 0.05
+      }
+    }
+    Solid {
+      translation 0.15 -0.30 0.15
+      children [
+        Shape {
+          appearance PBRAppearance {
+            baseColor 0.2 0.2 0.2
+            roughness 1
+            metalness 0
+          }
+          geometry Box {
+            size 0.60 0.02 0.45
+          }
+        }
+      ]
+      name "plow_R"
+      boundingObject Box {
+        size 0.60 0.02 0.45
+      }
+      physics Physics {
+        density -1
+        mass 0.05
+      }
+    }
+    Solid {
+      translation 0.46 0 0.15
+      children [
+        Shape {
+          appearance PBRAppearance {
+            baseColor 0.2 0.2 0.2
+            roughness 1
+            metalness 0
+          }
+          geometry Box {
+            size 0.02 0.62 0.45
+          }
+        }
+      ]
+      name "plow_front"
+      boundingObject Box {
+        size 0.02 0.62 0.45
+      }
+      physics Physics {
+        density -1
+        mass 0.05
+      }
     }
   ]
 }
 Pioneer3dx {
-  translation 2.5 -2.2 0.0975
+  translation 2.0 -3.2 0.0975
   rotation 0 0 1 1.5708
   name "robot_cyan"
   controller "ball_pusher"
   customData "cyan 2.5 6 60"
   extensionSlot [
     GPS {
-      name "gps"
     }
     Compass {
-      name "compass"
+    }
+    Camera {
+      translation 0.13 0 0.2
+      fieldOfView 1.2
+      width 160
+      height 120
+    }
+    Solid {
+      translation 0.15 0.30 0.15
+      children [
+        Shape {
+          appearance PBRAppearance {
+            baseColor 0.2 0.2 0.2
+            roughness 1
+            metalness 0
+          }
+          geometry Box {
+            size 0.60 0.02 0.45
+          }
+        }
+      ]
+      name "plow_L"
+      boundingObject Box {
+        size 0.60 0.02 0.45
+      }
+      physics Physics {
+        density -1
+        mass 0.05
+      }
+    }
+    Solid {
+      translation 0.15 -0.30 0.15
+      children [
+        Shape {
+          appearance PBRAppearance {
+            baseColor 0.2 0.2 0.2
+            roughness 1
+            metalness 0
+          }
+          geometry Box {
+            size 0.60 0.02 0.45
+          }
+        }
+      ]
+      name "plow_R"
+      boundingObject Box {
+        size 0.60 0.02 0.45
+      }
+      physics Physics {
+        density -1
+        mass 0.05
+      }
+    }
+    Solid {
+      translation 0.46 0 0.15
+      children [
+        Shape {
+          appearance PBRAppearance {
+            baseColor 0.2 0.2 0.2
+            roughness 1
+            metalness 0
+          }
+          geometry Box {
+            size 0.02 0.62 0.45
+          }
+        }
+      ]
+      name "plow_front"
+      boundingObject Box {
+        size 0.02 0.62 0.45
+      }
+      physics Physics {
+        density -1
+        mass 0.05
+      }
     }
   ]
 }
