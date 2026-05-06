@@ -7,8 +7,8 @@ EXTERNPROTO "https://raw.githubusercontent.com/cyberbotics/webots/R2025a/project
 WorldInfo {
 }
 Viewpoint {
-  orientation 0.5512455475885749 0.622629851592871 -0.5553921264919153 2.0210652187059686
-  position 1.834669436127088 2.1662120545703116 22.279877142900325
+  orientation 0.5295290527010285 0.5230667180240635 -0.6678324571635361 1.9752839978950185
+  position 1.1367300727695504 5.925724875467754 23.269019033421998
 }
 TexturedBackground {
   texture "factory"
@@ -581,7 +581,7 @@ Robot {
       verticalFieldOfView 0.1
       numberOfLayers 1
       minRange 0.1
-      maxRange 2.0
+      maxRange 2
     }
     Camera {
       translation 0.35 0 0.18
@@ -625,7 +625,7 @@ Robot {
       ]
       endPoint Solid {
         translation 0.3 0.38 -0.03
-        rotation 1 6.242298650736818e-10 -6.2423215800237e-10 1.570799999999996
+        rotation 1 2.160923371383803e-09 -2.1609313089132833e-09 1.570799999999996
         children [
           Shape {
             appearance PBRAppearance {
@@ -658,7 +658,7 @@ Robot {
       ]
       endPoint Solid {
         translation 0.3 -0.38 -0.03
-        rotation 1 7.215734901596369e-10 -7.215761406521986e-10 1.570799999999995
+        rotation 1 -8.151188589131309e-10 8.151218530171075e-10 1.570799999999995
         children [
           Shape {
             appearance PBRAppearance {
@@ -694,7 +694,7 @@ Robot {
       ]
       endPoint Solid {
         translation -0.3 0.38 -0.03
-        rotation 1 4.626664954577265e-10 -4.62668194929486e-10 1.5707999999999935
+        rotation 1 -1.074449803353981e-09 1.0744537500360147e-09 1.5707999999999935
         children [
           Shape {
             appearance PBRAppearance {
@@ -730,7 +730,7 @@ Robot {
       ]
       endPoint Solid {
         translation -0.3 -0.38 -0.03
-        rotation 1 6.386109335361191e-10 -6.386132792896884e-10 1.570799999999995
+        rotation 1 2.1757287026636852e-09 -2.1757366945764517e-09 1.570799999999995
         children [
           Shape {
             appearance PBRAppearance {
@@ -883,7 +883,7 @@ Robot {
       verticalFieldOfView 0.1
       numberOfLayers 1
       minRange 0.1
-      maxRange 2.0
+      maxRange 2
     }
     Camera {
       translation 0.35 0 0.18
@@ -925,7 +925,7 @@ Robot {
       ]
       endPoint Solid {
         translation 0.3 0.38 -0.03
-        rotation 1 -7.243974745134891e-10 7.244001353788762e-10 1.5708
+        rotation 1 -2.2637421078546533e-09 2.263750423058992e-09 1.5708
         children [
           Shape {
             appearance PBRAppearance {
@@ -961,7 +961,7 @@ Robot {
       ]
       endPoint Solid {
         translation 0.3 -0.38 -0.03
-        rotation 1 7.245159899496023e-10 -7.245186512503218e-10 1.5708
+        rotation 1 2.264112468592508e-09 -2.264120785157256e-09 1.5708
         children [
           Shape {
             appearance PBRAppearance {
@@ -997,7 +997,7 @@ Robot {
       ]
       endPoint Solid {
         translation -0.3 0.38 -0.03
-        rotation 1 7.24440555268869e-10 -7.244432162925009e-10 1.5708
+        rotation 1 2.2638767352152178e-09 -2.263885050914068e-09 1.5708
         children [
           Shape {
             appearance PBRAppearance {
@@ -1033,7 +1033,7 @@ Robot {
       ]
       endPoint Solid {
         translation -0.3 -0.38 -0.03
-        rotation 1 7.24513515822622e-10 -7.245161771142535e-10 1.5708
+        rotation 1 2.2641047369456944e-09 -2.264113053482044e-09 1.5708
         children [
           Shape {
             appearance PBRAppearance {
@@ -1186,7 +1186,7 @@ Robot {
       verticalFieldOfView 0.1
       numberOfLayers 1
       minRange 0.1
-      maxRange 2.0
+      maxRange 2
     }
     Camera {
       translation 0.35 0 0.18
@@ -1228,7 +1228,7 @@ Robot {
       ]
       endPoint Solid {
         translation 0.3 0.38 -0.03
-        rotation 1 7.245300868839709e-10 -7.245327482364713e-10 1.5708
+        rotation 1 2.264156521512411e-09 -2.264164838238974e-09 1.5708
         children [
           Shape {
             appearance PBRAppearance {
@@ -1264,7 +1264,7 @@ Robot {
       ]
       endPoint Solid {
         translation 0.3 -0.38 -0.03
-        rotation 1 7.245367241896141e-10 -7.24539385566495e-10 1.5708
+        rotation 1 2.2641772630925455e-09 -2.264185579895297e-09 1.5708
         children [
           Shape {
             appearance PBRAppearance {
@@ -1300,7 +1300,7 @@ Robot {
       ]
       endPoint Solid {
         translation -0.3 0.38 -0.03
-        rotation 1 7.245359543820384e-10 -7.245386157560912e-10 1.5708
+        rotation 1 2.26417485744387e-09 -2.264183174237787e-09 1.5708
         children [
           Shape {
             appearance PBRAppearance {
@@ -1336,7 +1336,7 @@ Robot {
       ]
       endPoint Solid {
         translation -0.3 -0.38 -0.03
-        rotation 1 7.245372977450299e-10 -7.245399591240173e-10 1.5708
+        rotation 1 2.264179055453219e-09 -2.264187372262555e-09 1.5708
         children [
           Shape {
             appearance PBRAppearance {
